@@ -1,0 +1,31 @@
+#mainWindow {
+	width: 100%;
+	height: 100%;
+
+}
+#header {
+	width: 100%;
+	height: 100px;
+	border-bottom: 2px gray solid;
+
+}
+#loginForm {
+	margin-top: 15px;
+	
+}
+#title {
+	width: 80%;
+	height: 100px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 50px; 
+	float: left;
+}
+#content {
+	margin-top: 10px;
+ 	text-align: center;
+}
+
+body {
+	background-color: azure;
+}
