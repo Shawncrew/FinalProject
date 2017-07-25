@@ -8,9 +8,9 @@ class RentalRepository implements IRepository {
     private $db;
     public function __construct(Database $database = null) {
         if($database==null) {
-            $this->$db = new \Project4\Models\Repositories\Database();
+            $this->db = new \Project4\Models\Repositories\Database();
         } else {
-            $this->$db = $database;
+            $this->db = $database;
         }
     }
    
