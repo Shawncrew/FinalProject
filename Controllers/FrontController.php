@@ -3,19 +3,19 @@ namespace Project4\Controllers;
 
 class FrontController implements IFrontController
 {
-    const DEFAULT_CONTROLLER    = "DefaultController";
+    const DEFAULT_CONTROLLER    = "\\Project4\Controllers\\DefaultController";
     const DEFAULT_ACTION        = "index";
 
     protected $controller       = self::DEFAULT_CONTROLLER;
     protected $action           = self::DEFAULT_ACTION;
     protected $params           = array();
-    protected $basePath         = "Project4/Views/";
+    protected $basePath         = "localhost/project4/";
 
     public function __construct(array $options = array()) {
         if(empty($options)) {
-            //$this->parseUri();
-            $this->setController($_GET["c"]);
-            $this->setAction($_GET["a"]);
+            $this->parseUri();
+            // $this->setController($_GET["c"]);
+            // $this->setAction($_GET["a"]);
         } else {
             if (isset($options["controller"])) {
                 $this->setController($options["controller"]);
@@ -31,19 +31,22 @@ class FrontController implements IFrontController
 
     protected function parseUri() {
         $path = trim(\parse_url($_SERVER["REQUEST_URI"], \PHP_URL_PATH), "/");
-        $path = \preg_replace('/[^a-zA-Z0-9]/', "", $path);
-        if (strpos($path, $this->basePath)===0) {
-            $path = substr($path, strlen($this->basePath));
-        }
-        @list($controller, $action, $params) = explode("/", $path, 3);
-        if(isset($controller)) {
-            $this->setController($controller);
-        }
-        if(isset($action)) {
-            $this->setAction($action);
-        }
-        if(isset($params)) {
-            $this->setParams(explode("/", $params));
+        $path = \preg_replace('/[^a-zA-Z0-9\/]/', "", $path);
+        $path = \substr($path, 9);
+        if(\strlen($path) !== 0) {    
+            if (strpos($path, $this->basePath)===0) {
+                $path = substr($path, strlen($this->basePath));
+            }
+            @list($controller, $action, $params) = explode("/", $path, 3);
+            if(isset($controller)) {
+                $this->setController($controller);
+            }
+            if(isset($action)) {
+                $this->setAction($action);
+            }
+            if(isset($params)) {
+                $this->setParams(explode("/", $params));
+            }
         }
     }
 
