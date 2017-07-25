@@ -8,30 +8,36 @@ class Database {
     static private $dbUsername = "administrator";
     static private $dbPassword = "security";
 
-    private $db;
+    /** @var \mysqli */
+    private $sql;
 
     public function __construct() {
-        $this->db = null;
-        $sql = new \mysqli("localhost", Database::$dbUsername, Database::$dbPassword);
-        if($sql->select_db(Database::$dbName)) {
+        $this->sql = null;
+        $s = new \mysqli("localhost", Database::$dbUsername, Database::$dbPassword);
+        if($s->select_db(Database::$dbName)) {
         }  else {
-            $sql->query('CREATE DATABASE '.Database::$dbName.';');
+            $s->query('CREATE DATABASE '.Database::$dbName.';');
         }
-        $sql->close();
+        $s->close();
     }
 
     public function Connect() {
-        $this->db = new \mysqli("localhost", Database::$dbUsername, Database::$dbPassword, Database::$dbName);
+        $this->sql = new \mysqli("localhost", Database::$dbUsername, Database::$dbPassword, Database::$dbName);
     }
 
     public function Close() {
-        $this->db->close();
+        $this->sql->close();
+    }
+
+    /** @return \mysqli_result */
+    public function FullQuery($query) {
+        $this->Connect();
+        $result = $this->sql->query($query);
+        $this->Close();
+        return $result;
     }
 
     public function Query($query) {
-        $this->Connect();
-        $result = $this->db->query($query);
-        $this->Close();
-        return $result;
+        return $this->sql->query($query);
     }
 }
