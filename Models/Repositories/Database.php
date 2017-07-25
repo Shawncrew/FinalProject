@@ -4,25 +4,25 @@ namespace Project4\Models\Repositories;
 class Database {
 
 
-    static private $dbName = "WebProgramming_Project4";
-    static private $dbUsername = "administrator";
-    static private $dbPassword = "security";
+    const DB_NAME = "mydb";
+    const DB_USERNAME = "nrylee";
+    const DB_PASSWORD = "nr013174";
 
     /** @var \mysqli */
     private $sql;
 
     public function __construct() {
         $this->sql = null;
-        $s = new \mysqli("localhost", Database::$dbUsername, Database::$dbPassword);
+        $s = new \mysqli("localhost", self::DB_USERNAME, self::DB_PASSWORD);
         if($s->select_db(Database::$dbName)) {
         }  else {
-            $s->query('CREATE DATABASE '.Database::$dbName.';');
+            $s->query('CREATE DATABASE '.self::DB_NAME.';');
         }
         $s->close();
     }
 
     public function Connect() {
-        $this->sql = new \mysqli("localhost", Database::$dbUsername, Database::$dbPassword, Database::$dbName);
+        $this->sql = new \mysqli("localhost", self::DB_USERNAME, self::DB_PASSWORD, self::DB_NAME);
     }
 
     public function Close() {
