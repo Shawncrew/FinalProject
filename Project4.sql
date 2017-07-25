@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`car_reservation` (
   INDEX `car_id_idx` (`car_id` ASC),
   INDEX `fk_origin_to_arport_idx` (`origin` ASC),
   INDEX `fk_destination_to_airport_idx` (`destination` ASC),
-  CONSTRAINT ``
+  CONSTRAINT `fk_carres_to_carinv`
     FOREIGN KEY (`car_id`)
     REFERENCES `mydb`.`rental_car_inventory` (`car_id`)
     ON DELETE NO ACTION
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`airport_parking_spaces` (
   `parkingIdentifier` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`parkingSpace_id`),
   INDEX `airport_id_idx` (`airport_id` ASC),
-  CONSTRAINT ``
+  CONSTRAINT `fk_parking_to_airport`
     FOREIGN KEY (`airport_id`)
     REFERENCES `mydb`.`airport` (`airport_id`)
     ON DELETE NO ACTION
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`flights` (
   INDEX `aircraft_id_idx` (`aircraft_id` ASC),
   INDEX `fk_destination_id_to_airport_idx` (`destination_id` ASC),
   INDEX `fk_origin_id_to_airport_idx` (`origin_id` ASC),
-  CONSTRAINT ``
+  CONSTRAINT `fk_flight_to_aircraft`
     FOREIGN KEY (`aircraft_id`)
     REFERENCES `mydb`.`aircraft` (`aircraft_id`)
     ON DELETE NO ACTION
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`parking_reservation` (
   `endReservationDate` DATETIME NOT NULL,
   PRIMARY KEY (`order_id`),
   INDEX `parkingSpace_id_idx` (`parkingSpace_id` ASC),
-  CONSTRAINT ``
+  CONSTRAINT `fk_parkres_to_space`
     FOREIGN KEY (`parkingSpace_id`)
     REFERENCES `mydb`.`airport_parking_spaces` (`parkingSpace_id`)
     ON DELETE NO ACTION
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`flight_seats` (
   PRIMARY KEY (`seat_id`),
   INDEX `flight_no_idx` (`flight_id` ASC),
   INDEX `fk_customer_id_to_customers_idx` (`customer_id` ASC),
-  CONSTRAINT ``
+  CONSTRAINT `fk_seat_to_flight`
     FOREIGN KEY (`flight_id`)
     REFERENCES `mydb`.`flights` (`flight_id`)
     ON DELETE NO ACTION
@@ -225,7 +225,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`orders` (
   `customer_id` INT NOT NULL,
   INDEX `customer_id_idx` (`customer_id` ASC),
-  CONSTRAINT ``
+  CONSTRAINT `fk_order_to_customer`
     FOREIGN KEY (`customer_id`)
     REFERENCES `mydb`.`customers` (`customer_id`)
     ON DELETE NO ACTION
@@ -249,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`credit_card` (
   `billingZip` INT NOT NULL,
   PRIMARY KEY (`number`),
   INDEX `customer_id_idx` (`customer_id` ASC),
-  CONSTRAINT ``
+  CONSTRAINT `fk_cc_to_customer`
     FOREIGN KEY (`customer_id`)
     REFERENCES `mydb`.`customers` (`customer_id`)
     ON DELETE NO ACTION
