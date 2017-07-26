@@ -10,7 +10,7 @@
     </head>
     <body>
         <!-- DO THINGS HERE THAT ARE ON EVERY PAGE ABOVE CONTENT -->
-        <?php include $template; ?>
+        <?php include $this->template; ?>
         <!-- DO THINGS HERE THAT ARE ON EVERY PAGE BELOW CONTENT -->        
     </body>
 </html>

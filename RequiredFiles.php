@@ -19,6 +19,7 @@ require_once __DIR__ . '/Models/Repositories/CustomerRepository.php';
 
 require_once __DIR__ . '/Views/View.php';
 require_once __DIR__ . '/Views/Index.php';
+require_once __DIR__ . '/Views/Customer/Edit.php';
 require_once __DIR__ . '/Views/Customer/RegistrationForm.php';
 
 require_once __DIR__ . '/Controllers/IFrontController.php';

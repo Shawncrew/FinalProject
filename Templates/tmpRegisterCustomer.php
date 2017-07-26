@@ -15,8 +15,8 @@
             <td><input type="text" name="password" />
         </tr>
     </table>
-    <?php if(isset($msg) && !empty($msg)): ?>
-    <div class="error-message"><?php echo $msg; ?></div>
+    <?php if(isset($this->msg) && !empty($this->msg)): ?>
+    <div class="error-message"><?php echo $this->msg; ?></div>
     <?php endif; ?>
     <input type="submit" />
 </form>

@@ -36,15 +36,18 @@ class CustomerController {
                 } else {
                     $id = $repo->InsertBasic($_POST['username'], $_POST['email'], $_POST['password']);
                     $customer = $repo->SelectById($id);
-                    \session_start();
+                    if(!isset($_SESSION)) \session_start();
                     $_SESSION['user_id'] = $customer->Id;
                     $_SESSION['user_username'] = $customer->_Username;
                     $_SESSION['user_fname'] = $customer->_FirstName;
                     $_SESSION['user_lname'] = $customer->_LastName;
                     if(empty($_SESSION['order_checkout_in_progress'])) {
-                        $view = new \Project4\Views\Customer\ProfilePage($customer, "You have been registered successfully!");
+                        $view = new \Project4\Views\Customer\Edit($customer, "You have been registered successfully!");
+                        $view->output();
                     } else {
-
+                        //TODO: Handle this.
+                        $view = new \Project4\Views\Customer\RegistrationForm("Something went wrong...");
+                        $view->output();
                     }
                 }
             }
@@ -52,5 +55,17 @@ class CustomerController {
             $view = new \Project4\Views\Customer\RegistrationForm();
             $view->output();
         }
+    }
+
+    public function edit(int $id) {
+        $repo = new \Project4\Models\Repositories\CustomerRepository();
+        $customer = $repo->SelectById($id);
+        if(!isset($_SESSION)) \session_start();
+        $_SESSION['user_id'] = $customer->Id;
+        $_SESSION['user_username'] = $customer->_Username;
+        $_SESSION['user_fname'] = $customer->_FirstName;
+        $_SESSION['user_lname'] = $customer->_LastName;     
+        $view = new \Project4\Views\Customer\Edit($customer, "You have been registered successfully!");
+        $view->output();   
     }
 }

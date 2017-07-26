@@ -9,64 +9,80 @@ class CustomerRepository implements IRepository {
     private $db;
     public function __construct(Database $database = null) {
         if($database==null) {
-            $this->$db = new \Project4\Models\Repositories\Database();
+            $this->db = new \Project4\Models\Repositories\Database();
         } else {
-            $this->$db = $database;
+            $this->db = $database;
         }
     }
 
     /** @return \Project4\Models\Customer */
     public function SelectById(int $id) {
         // TODO: Need to cleanse the inputs.
-        $q = $this->db->FullQuery("SELECT * FROM Customers WHERE Id=$id;");
-        if(\mysqli_num_rows($q)==0) {
+        $this->db->Connect();
+        $q = $this->db->Query("SELECT * FROM customers WHERE customer_id=$id;");
+        $found = $q->num_rows===1;
+        if(! $found) {
+            $this->db->Close();
             return null;
         } else {
             $customerArr = $q->fetch_assoc();
-            return MapRowToCustomer($customerArr);
+            $customer = self::MapRowToCustomer($customerArr);
+            $this->db->Close();
+            return $customer;
         }
     }
 
     /** @return \Project4\Models\Customer */
     private static function MapRowToCustomer($row) {
         $customer = new \Project4\Models\Customer();
-        $customer->Id = $customerArr['customer_id'];
-        $customer->_City = $customerArr['city'];
-        $customer->_Email = $customerArr['email'];
-        $customer->_FirstName = $customerArr['fname'];            
-        $customer->_LastName = $customerArr['lname'];
-        $customer->_Phone = $customerArr['phone#'];
-        $customer->_State = $customerArr['state'];
-        $customer->_StreetAddress = $customerArr['addr1'];
-        $customer->_StreetAddress2 = $customerArr['addr2'];
-        $customer->_Username = $customerArr['username'];
-        $customer->_Zip = $customerArr['zip'];
+        $customer->Id = $row['customer_id'];
+        $customer->_City = $row['city'];
+        $customer->_Email = $row['email'];
+        $customer->_FirstName = $row['fname'];
+        $customer->_LastName = $row['lname'];
+        $customer->_Phone = $row['phone#'];
+        $customer->_State = $row['state'];
+        $customer->_StreetAddress = $row['addr1'];
+        $customer->_StreetAddress2 = $row['addr2'];
+        $customer->_Username = $row['username'];
+        $customer->_Zip = $row['zip'];
         return $customer;
     }
 
     /** @return bool */
     public function UsernameAvailable(bool $username) {
+        $this->db->Connect();
         $u = $this->db->sql->real_escape_string($username);
-        $q = $this->db->FullQuery("SELECT username FROM Customers WHERE username='$u';");
-        return \mysqli_num_rows($q)==0;
+        $q = $this->db->Query("SELECT username FROM customers WHERE username='$u';");
+        $available = $this->db->sql->affected_rows===0;
+        $this->db->Close();
+        return $available;
     }
     /** @return bool */
     public function EmailAvailable(bool $email) {
+        $this->db->Connect();
         $e = $this->db->sql->real_escape_string($email);
-        $q = $this->db->FullQuery("SELECT username FROM Customers WHERE email='$e';");
-        return \mysqli_num_rows($q)==0;
+        $q = $this->db->Query("SELECT username FROM customers WHERE email='$e';");
+        $available = $this->db->sql->affected_rows===0;
+        $this->db->Close();
+        return $available;
     }
 
     /** @return \Project4\Models\Customer */
     public function SelectFromLogin(string $username, string $password) {
+        $this->db->Connect();
         $u = $this->db->sql->real_escape_string($username);
         $p = $this->db->sql->real_escape_string($password);
-        $q = $this->db->FullQuery("SELECT username FROM Customers WHERE username='$u' AND password='$p';");
-        if(\mysqli_num_rows($q)==0) {
+        $q = $this->db->Query("SELECT username FROM customers WHERE username='$u' AND password='$p';");
+        $notfound = $this->db->sql->affected_rows===0;
+        if($notfound) {
+            $this->db->Close();
             return null;
         } else {
             $customerArr = $q->fetch_assoc();
-            return MapRowToCustomer($customerArr);
+            $customer = self::MapRowToCustomer($customerArr);
+            $this->db->Close();
+            return $customer;
         }
     }
 
@@ -79,19 +95,23 @@ class CustomerRepository implements IRepository {
     }
     /** @return int */
     public function InsertBasic(string $username, string $email, string $password) {
+        $this->db->Connect();
+        // you need to do the real_escape_string on every string that you place in the table
         $u = $this->db->sql->real_escape_string($username);
         $e = $this->db->sql->real_escape_string($email);
         $p = $this->db->sql->real_escape_string($password);
-        $this->db->Connect();
-        $this->db->FullQuery("INSERT INTO Customers (username, email, password) VALUES ('$u', '$e', '$p')");
+        $this->db->Query("INSERT INTO customers (username, email, password) VALUES ('$u', '$e', '$p')");
         $id = $this->db->sql->insert_id;
+        if(!empty($this->db->sql->error)) echo $this->db->sql->error;
         $this->db->Close();
         return $id;
     }
     public function Delete(int $id) {
-        $this->db->FullQuery("DELETE FROM Customers WHERE customer_id=$id");
+        $this->db->FullQuery("DELETE FROM customers WHERE customer_id=$id");
     }
     public function Update($object) {
+        // you need to do the real_escape_string on every string that you place in the table
+        $queryString = ("UPDATE customers SET x=$x, y=$y WHERE customer_id=$id");
         throw new \BadFunctionCallException("Not Implemented");
     }
 }

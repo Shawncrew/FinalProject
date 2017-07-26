@@ -13,8 +13,6 @@ class RegistrationForm {
 
     public function output() {
         $pageTitle = "Customer Registration";
-        $template = $this->template;
-        $msg = $this->msg;;
         include($this->layout);
     }
 }
