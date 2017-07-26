@@ -12,7 +12,7 @@
         </tr>
         <tr>
             <td>Password:</td>
-            <td><input type="text" name="password" />
+            <td><input type="password" name="password" />
         </tr>
     </table>
     <?php if(isset($this->msg) && !empty($this->msg)): ?>
