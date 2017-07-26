@@ -6,7 +6,7 @@ class RegistrationForm {
     private $msg;
     private $layout = __DIR__ . '/../../Templates/_DefaultLayout.php';
     /** @param \Project4\Models\Customer $model */
-    public function __construct(string $msg = '') {
+    public function __construct($msg = '') {
         $this->template = __DIR__ . '/../../Templates/tmpRegisterCustomer.php';
         $this->msg = $msg;
     }
