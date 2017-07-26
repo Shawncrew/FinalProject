@@ -109,9 +109,25 @@ class CustomerRepository implements IRepository {
     public function Delete(int $id) {
         $this->db->FullQuery("DELETE FROM customers WHERE customer_id=$id");
     }
+
+    /** @param \Project4\Models\Customer $object */
     public function Update($object) {
         // you need to do the real_escape_string on every string that you place in the table
-        $queryString = ("UPDATE customers SET x=$x, y=$y WHERE customer_id=$id");
-        throw new \BadFunctionCallException("Not Implemented");
+        $this->db->Connect();
+        $customer_id    = $object->Id;
+        $email          = $this->db->sql->real_escape_string($object->_Email);
+        $fname          = $this->db->sql->real_escape_string($object->_FirstName);
+        $lname          = $this->db->sql->real_escape_string($object->_LastName);
+        $phone          = $this->db->sql->real_escape_string($object->_Phone);
+        $addr1          = $this->db->sql->real_escape_string($object->_StreetAddress);
+        $addr2          = $this->db->sql->real_escape_string($object->_StreetAddress2);
+        $city           = $this->db->sql->real_escape_string($object->_City);
+        $state          = $this->db->sql->real_escape_string($object->_State);
+        $zip            = $this->db->sql->real_escape_string($object->_Zip);
+
+        $queryString = ("UPDATE customers SET `email`='$email', `fname`='$fname', `lname`='$lname', `phone#`='$phone', `addr1`='$addr1', `addr2`='$addr2', `city`='$city', `state`='$state', `zip`='$zip' WHERE customer_id=$customer_id");
+        $this->db->Query($queryString);
+        if(!empty($this->db->sql->error)) echo $this->db->sql->error;
+        $this->db->Close();
     }
 }

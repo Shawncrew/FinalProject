@@ -42,8 +42,9 @@ class CustomerController {
                     $_SESSION['user_fname'] = $customer->_FirstName;
                     $_SESSION['user_lname'] = $customer->_LastName;
                     if(empty($_SESSION['order_checkout_in_progress'])) {
-                        $view = new \Project4\Views\Customer\Edit($customer, "You have been registered successfully!");
-                        $view->output();
+                        header("Location: /Project4/Customer/Edit/$id/You%20have%20been%20registered%20successfully");
+                        // $view = new \Project4\Views\Customer\Edit($customer, "You have been registered successfully!");
+                        // $view->output();
                     } else {
                         //TODO: Handle this.
                         $view = new \Project4\Views\Customer\RegistrationForm("Something went wrong...");
@@ -58,14 +59,37 @@ class CustomerController {
     }
 
     public function edit(int $id) {
-        $repo = new \Project4\Models\Repositories\CustomerRepository();
-        $customer = $repo->SelectById($id);
         if(!isset($_SESSION)) \session_start();
-        $_SESSION['user_id'] = $customer->Id;
-        $_SESSION['user_username'] = $customer->_Username;
-        $_SESSION['user_fname'] = $customer->_FirstName;
-        $_SESSION['user_lname'] = $customer->_LastName;     
-        $view = new \Project4\Views\Customer\Edit($customer, "You have been registered successfully!");
-        $view->output();   
+        $repo = new \Project4\Models\Repositories\CustomerRepository();
+        $msg = '';
+        if(\strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
+            if(! (isset($_SESSION['user_id']) && $_SESSION['user_id']==$id)) {
+                \session_abort();
+                header("Location: /Project4/Customer/Login/Error%20with%20login%20account%20not%20updated");
+                return;
+            } else {
+                $customer = new \Project4\Models\Customer();
+                $customer->Id=(int)$_POST['customer_id'];
+                $customer->_Username=$_POST['username'];
+                $customer->_Email=$_POST['email'];
+                $customer->_FirstName=$_POST['fname'];
+                $customer->_LastName=$_POST['lname'];
+                $customer->_Phone=$_POST['phone#'];
+                $customer->_StreetAddress=$_POST['addr1'];
+                $customer->_StreetAddress2=$_POST['addr2'];
+                $customer->_City=$_POST['city'];
+                $customer->_State=$_POST['state'];
+                $customer->_Zip=$_POST['zip'];
+                $repo->Update($customer);
+                $msg = "Info Successfully Updated!";
+            }
+        }
+        $c = $repo->SelectById($id);
+        $_SESSION['user_id'] = $c->Id;
+        $_SESSION['user_username'] = $c->_Username;
+        $_SESSION['user_fname'] = $c->_FirstName;
+        $_SESSION['user_lname'] = $c->_LastName;     
+        $view = new \Project4\Views\Customer\Edit($c, $msg);
+        $view->output();        
     }
 }
